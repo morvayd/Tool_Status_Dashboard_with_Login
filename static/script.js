@@ -8,12 +8,22 @@ document.addEventListener('DOMContentLoaded', function() {
     updateStats();
     updateLastRefresh();
     
-    // Set up event listeners
-    document.getElementById('reloadBtn').addEventListener('click', reloadFromDefaultCSV);
-    document.getElementById('uploadBtn').addEventListener('click', () => {
-        document.getElementById('fileInput').click();
-    });
-    document.getElementById('fileInput').addEventListener('change', handleFileUpload);
+    // Set up event listeners (only if elements exist)
+    const reloadBtn = document.getElementById('reloadBtn');
+    const uploadBtn = document.getElementById('uploadBtn');
+    const fileInput = document.getElementById('fileInput');
+    
+    if (reloadBtn) {
+        reloadBtn.addEventListener('click', reloadFromDefaultCSV);
+    }
+    if (uploadBtn) {
+        uploadBtn.addEventListener('click', () => {
+            fileInput.click();
+        });
+    }
+    if (fileInput) {
+        fileInput.addEventListener('change', handleFileUpload);
+    }
     
     // Set up stat card click listeners for filtering
     setupStatCardFilters();
@@ -54,7 +64,7 @@ function filterTableByStatus(filterType) {
     // Update current filter
     currentFilter = filterType;
     
-    // Remove active class from all cards
+    // Remove active class from all cards - next line original uncommented
     statCards.forEach(card => card.classList.remove('active'));
     
     // Add active class to clicked card

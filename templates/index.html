@@ -11,7 +11,7 @@
         <header>
             <div class="header-content">
                 <div>
-                    <h1>🔧 Manufacturing Tool Dashboard</h1>
+                    <h1>🔧 Manufacturing Tool Dashboard 🔧</h1>
                     <p class="subtitle">Real-time status tracking for manufacturing equipment</p>
                 </div>
                 <div class="header-actions">
@@ -50,7 +50,7 @@
             </button>
             <input type="file" id="fileInput" accept=".csv" style="display: none;">
             {% else %}
-            <p class="info-text">Admin login required to upload or reload data</p>
+            <p class="info-text">Tool owners, please login to modify your tool status.</p>
             {% endif %}
         </div>
 
@@ -59,7 +59,7 @@
         <div class="stats-container">
             <div class="stat-card">
                 <div class="stat-value" id="totalTools">{{ tools|length }}</div>
-                <div class="stat-label">Total Tools</div>
+                <div class="stat-label">All Tools</div>
             </div>
             <div class="stat-card operational">
                 <div class="stat-value" id="operationalTools">0</div>
@@ -67,11 +67,11 @@
             </div>
             <div class="stat-card maintenance">
                 <div class="stat-value" id="maintenanceTools">0</div>
-                <div class="stat-label">Under Maintenance</div>
+                <div class="stat-label">Under Maintenance/Repair</div>
             </div>
             <div class="stat-card down">
                 <div class="stat-value" id="downTools">0</div>
-                <div class="stat-label">Down/Repair</div>
+                <div class="stat-label">Down/Idle</div>
             </div>
         </div>
 

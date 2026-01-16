@@ -460,7 +460,7 @@ def get_tools():
     tools = get_all_tools()
     return jsonify(tools)
 
-@app.route('/api/reload', methods=['POST'])
+@app.route('/api/reload', methods=['POST']) 
 @login_required
 @admin_required
 def reload_data():
