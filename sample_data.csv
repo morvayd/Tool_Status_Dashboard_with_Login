@@ -1,0 +1,16 @@
+MFGToolName,CurrentStatus,NextAction,ResponsibleParty,ETA
+CNC Mill #1,Operational,Scheduled Maintenance,John Smith,2026-01-15
+Lathe #3,Under Repair,Replace Bearings,Mike Johnson,2026-01-12
+Drill Press #2,Operational,Calibration Check,Sarah Williams,2026-01-20
+Grinder #5,Idle,Awaiting Parts,Tom Brown,2026-01-18
+Welding Station #1,Operational,Safety Inspection,Lisa Davis,2026-01-25
+CNC Mill #2,Under Maintenance,Software Update,John Smith,2026-01-10
+Lathe #1,Operational,Routine Cleaning,Mike Johnson,2026-01-14
+Press Brake #1,Down,Motor Replacement,Tom Brown,2026-01-22
+Plasma Cutter #1,Operational,Consumables Check,Sarah Williams,2026-01-16
+Band Saw #3,Under Repair,Blade Replacement,Lisa Davis,2026-01-11
+Milling Machine #4,Operational,Lubrication Service,John Smith,2026-01-19
+Hydraulic Press #2,Idle,Operator Training,Mike Johnson,2026-01-13
+Laser Cutter #1,Operational,Lens Cleaning,Sarah Williams,2026-01-17
+Turning Center #2,Under Maintenance,Coolant System Flush,Tom Brown,2026-01-21
+Grinding Machine #2,Operational,Wheel Dressing,Lisa Davis,2026-01-24

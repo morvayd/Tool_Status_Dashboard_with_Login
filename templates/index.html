@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MFG Tool Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <div>
+                    <h1>🔧 Manufacturing Tool Dashboard</h1>
+                    <p class="subtitle">Real-time status tracking for manufacturing equipment</p>
+                </div>
+                <div class="header-actions">
+                    {% if current_user.is_authenticated %}
+                        <span class="user-info">👤 {{ current_user.username }}</span>
+                        {% if current_user.is_admin %}
+                            <a href="{{ url_for('admin') }}" class="btn btn-admin">Admin Panel</a>
+                        {% else %}
+                            <a href="{{ url_for('user_dashboard') }}" class="btn btn-user">My Tool</a>
+                        {% endif %}
+                        <a href="{{ url_for('logout') }}" class="btn btn-logout">Logout</a>
+                    {% else %}
+                        <a href="{{ url_for('login') }}" class="btn btn-login">🔐 Login</a>
+                    {% endif %}
+                </div>
+            </div>
+        </header>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for category, message in messages %}
+                        <div class="flash-message flash-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <div class="controls">
+            {% if current_user.is_authenticated and current_user.is_admin %}
+            <button id="reloadBtn" class="btn btn-primary">
+                <span class="icon">🔄</span> Reload from Default CSV
+            </button>
+            <button id="uploadBtn" class="btn btn-secondary">
+                <span class="icon">📁</span> Upload New CSV
+            </button>
+            <input type="file" id="fileInput" accept=".csv" style="display: none;">
+            {% else %}
+            <p class="info-text">Admin login required to upload or reload data</p>
+            {% endif %}
+        </div>
+
+        <div id="statusMessage" class="status-message"></div>
+
+        <div class="stats-container">
+            <div class="stat-card">
+                <div class="stat-value" id="totalTools">{{ tools|length }}</div>
+                <div class="stat-label">Total Tools</div>
+            </div>
+            <div class="stat-card operational">
+                <div class="stat-value" id="operationalTools">0</div>
+                <div class="stat-label">Operational</div>
+            </div>
+            <div class="stat-card maintenance">
+                <div class="stat-value" id="maintenanceTools">0</div>
+                <div class="stat-label">Under Maintenance</div>
+            </div>
+            <div class="stat-card down">
+                <div class="stat-value" id="downTools">0</div>
+                <div class="stat-label">Down/Repair</div>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <table id="toolsTable">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Tool Name</th>
+                        <th>Current Status</th>
+                        <th>Next Action</th>
+                        <th>Responsible Party</th>
+                        <th>ETA</th>
+                        <th>Last Updated</th>
+                    </tr>
+                </thead>
+                <tbody id="toolsTableBody">
+                    {% for tool in tools %}
+                    <tr data-status="{{ tool.current_status }}">
+                        <td>{{ tool.id }}</td>
+                        <td class="tool-name">{{ tool.mfg_tool_name }}</td>
+                        <td>
+                            <span class="status-badge status-{{ tool.current_status|lower|replace(' ', '-') }}">
+                                {{ tool.current_status }}
+                            </span>
+                        </td>
+                        <td>{{ tool.next_action }}</td>
+                        <td>{{ tool.responsible_party }}</td>
+                        <td>{{ tool.eta }}</td>
+                        <td class="timestamp">{{ tool.last_updated }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <footer>
+            <p>Last refreshed: <span id="lastRefresh">{{ now }}</span></p>
+        </footer>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

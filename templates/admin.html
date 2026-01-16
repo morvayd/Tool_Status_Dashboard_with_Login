@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - MFG Tool Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        .admin-container {
+            max-width: 1400px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+        
+        .admin-header {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .admin-header h1 {
+            margin: 0;
+            font-size: 2em;
+        }
+        
+        .admin-header p {
+            margin: 5px 0 0 0;
+            opacity: 0.9;
+        }
+        
+        .header-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .section-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+        
+        .section-card h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #e74c3c;
+        }
+        
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-success {
+            background: #27ae60;
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background: #229954;
+        }
+        
+        .btn-warning {
+            background: #f39c12;
+            color: white;
+        }
+        
+        .btn-warning:hover {
+            background: #e67e22;
+        }
+        
+        .btn-danger {
+            background: #e74c3c;
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: #c0392b;
+        }
+        
+        .btn-secondary {
+            background: #95a5a6;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #7f8c8d;
+        }
+        
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 0.9em;
+        }
+        
+        .users-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        .users-table th,
+        .users-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ecf0f1;
+        }
+        
+        .users-table th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .users-table tr:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+        
+        .badge-admin {
+            background-color: #e74c3c;
+            color: white;
+        }
+        
+        .badge-user {
+            background-color: #3498db;
+            color: white;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+        
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 30px;
+            width: 90%;
+            max-width: 600px;
+            border-radius: 15px;
+            box-shadow: 0 10px 50px rgba(0, 0, 0, 0.3);
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #ecf0f1;
+        }
+        
+        .modal-header h3 {
+            margin: 0;
+            color: #2c3e50;
+        }
+        
+        .close {
+            color: #95a5a6;
+            font-size: 35px;
+            font-weight: bold;
+            cursor: pointer;
+            line-height: 1;
+        }
+        
+        .close:hover {
+            color: #2c3e50;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #bdc3c7;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+        
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .checkbox-group input[type="checkbox"] {
+            width: auto;
+            margin: 0;
+        }
+        
+        .flash-messages {
+            margin-bottom: 20px;
+        }
+        
+        .flash-message {
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+        
+        .flash-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .flash-error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .flash-info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <div class="admin-header">
+            <div>
+                <h1>⚙️ Admin Panel</h1>
+                <p>User Management & System Administration</p>
+            </div>
+            <div class="header-actions">
+                <a href="{{ url_for('index') }}" class="btn btn-secondary">Dashboard</a>
+                <a href="{{ url_for('logout') }}" class="btn btn-danger">Logout</a>
+            </div>
+        </div>
+        
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for category, message in messages %}
+                        <div class="flash-message flash-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+        
+        <div class="section-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2 style="margin: 0; border: none;">👥 User Management</h2>
+                <button onclick="openCreateModal()" class="btn btn-success">
+                    ➕ Create New User
+                </button>
+            </div>
+            
+            <table class="users-table">
+                <thead>
+                    <tr>
+                        <th>Employee ID</th>
+                        <th>Username</th>
+                        <th>Role</th>
+                        <th>Assigned Tool</th>
+                        <th>Created</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                    <tr>
+                        <td><strong>{{ user.employee_id }}</strong></td>
+                        <td>{{ user.username }}</td>
+                        <td>
+                            {% if user.is_admin %}
+                                <span class="badge badge-admin">Admin</span>
+                            {% else %}
+                                <span class="badge badge-user">User</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ user.mfg_tool_name or 'Not Assigned' }}</td>
+                        <td>{{ user.created_at }}</td>
+                        <td>
+                            <div class="action-buttons">
+                                <button onclick="openEditModal({{ user.id }}, '{{ user.employee_id }}', '{{ user.username }}', '{{ user.first_name or '' }}', '{{ user.last_name or '' }}', {{ user.is_admin }}, {{ user.assigned_tool_id or 'null' }})"
+                                        class="btn btn-warning btn-small">Edit</button>
+                                {% if user.id != current_user.id %}
+                                <button onclick="deleteUser({{ user.id }}, '{{ user.username }}')" 
+                                        class="btn btn-danger btn-small">Delete</button>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <!-- Create User Modal -->
+    <div id="createModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Create New User</h3>
+                <span class="close" onclick="closeCreateModal()">&times;</span>
+            </div>
+            <form id="createForm">
+                <div class="form-group">
+                    <label for="create_employee_id">Employee ID *</label>
+                    <input type="text" id="create_employee_id" required>
+                </div>
+                <div class="form-group">
+                    <label for="create_username">Username *</label>
+                    <input type="text" id="create_username" required>
+                </div>
+                <div class="form-group">
+                    <label for="create_first_name">First Name</label>
+                    <input type="text" id="create_first_name">
+                </div>
+                <div class="form-group">
+                    <label for="create_last_name">Last Name</label>
+                    <input type="text" id="create_last_name">
+                </div>
+                <div class="form-group">
+                    <label for="create_password">Password *</label>
+                    <input type="password" id="create_password" required>
+                </div>
+                <div class="form-group">
+                    <label for="create_assigned_tool">Assigned Tool</label>
+                    <select id="create_assigned_tool">
+                        <option value="">-- No Tool Assigned --</option>
+                        {% for tool in tools %}
+                        <option value="{{ tool.id }}">{{ tool.mfg_tool_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group checkbox-group">
+                    <input type="checkbox" id="create_is_admin">
+                    <label for="create_is_admin" style="margin: 0;">Admin User</label>
+                </div>
+                <button type="submit" class="btn btn-success">Create User</button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Edit User Modal -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Edit User</h3>
+                <span class="close" onclick="closeEditModal()">&times;</span>
+            </div>
+            <form id="editForm">
+                <input type="hidden" id="edit_user_id">
+                <div class="form-group">
+                    <label for="edit_employee_id">Employee ID</label>
+                    <input type="text" id="edit_employee_id" disabled>
+                </div>
+                <div class="form-group">
+                    <label for="edit_username">Username *</label>
+                    <input type="text" id="edit_username" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit_first_name">First Name</label>
+                    <input type="text" id="edit_first_name">
+                </div>
+                <div class="form-group">
+                    <label for="edit_last_name">Last Name</label>
+                    <input type="text" id="edit_last_name">
+                </div>
+                <div class="form-group">
+                    <label for="edit_password">New Password (leave blank to keep current)</label>
+                    <input type="password" id="edit_password">
+                </div>
+                <div class="form-group">
+                    <label for="edit_assigned_tool">Assigned Tool</label>
+                    <select id="edit_assigned_tool">
+                        <option value="">-- No Tool Assigned --</option>
+                        {% for tool in tools %}
+                        <option value="{{ tool.id }}">{{ tool.mfg_tool_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group checkbox-group">
+                    <input type="checkbox" id="edit_is_admin">
+                    <label for="edit_is_admin" style="margin: 0;">Admin User</label>
+                </div>
+                <button type="submit" class="btn btn-warning">Update User</button>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        // Create User Modal
+        function openCreateModal() {
+            document.getElementById('createModal').style.display = 'block';
+        }
+        
+        function closeCreateModal() {
+            document.getElementById('createModal').style.display = 'none';
+            document.getElementById('createForm').reset();
+        }
+        
+        document.getElementById('createForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = {
+                employee_id: document.getElementById('create_employee_id').value,
+                username: document.getElementById('create_username').value,
+                first_name: document.getElementById('create_first_name').value,
+                last_name: document.getElementById('create_last_name').value,
+                password: document.getElementById('create_password').value,
+                assigned_tool_id: document.getElementById('create_assigned_tool').value || null,
+                is_admin: document.getElementById('create_is_admin').checked ? 1 : 0
+            };
+            
+            try {
+                const response = await fetch('/admin/create-user', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(formData)
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    alert('✅ User created successfully!');
+                    location.reload();
+                } else {
+                    alert('❌ Error: ' + data.message);
+                }
+            } catch (error) {
+                alert('❌ Error creating user: ' + error.message);
+            }
+        });
+        
+        // Edit User Modal
+        function openEditModal(userId, employeeId, username, firstName, lastName, isAdmin, assignedToolId) {
+            document.getElementById('edit_user_id').value = userId;
+            document.getElementById('edit_employee_id').value = employeeId;
+            document.getElementById('edit_username').value = username;
+            document.getElementById('edit_first_name').value = firstName || '';
+            document.getElementById('edit_last_name').value = lastName || '';
+            document.getElementById('edit_is_admin').checked = isAdmin === 1;
+            document.getElementById('edit_assigned_tool').value = assignedToolId || '';
+            document.getElementById('editModal').style.display = 'block';
+        }
+        
+        function closeEditModal() {
+            document.getElementById('editModal').style.display = 'none';
+            document.getElementById('editForm').reset();
+        }
+        
+        document.getElementById('editForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const userId = document.getElementById('edit_user_id').value;
+            const formData = {
+                username: document.getElementById('edit_username').value,
+                first_name: document.getElementById('edit_first_name').value,
+                last_name: document.getElementById('edit_last_name').value,
+                new_password: document.getElementById('edit_password').value || null,
+                assigned_tool_id: document.getElementById('edit_assigned_tool').value || null,
+                is_admin: document.getElementById('edit_is_admin').checked ? 1 : 0
+            };
+            
+            try {
+                const response = await fetch(`/admin/update-user/${userId}`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(formData)
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    alert('✅ User updated successfully!');
+                    location.reload();
+                } else {
+                    alert('❌ Error: ' + data.message);
+                }
+            } catch (error) {
+                alert('❌ Error updating user: ' + error.message);
+            }
+        });
+        
+        // Delete User
+        async function deleteUser(userId, username) {
+            if (!confirm(`Are you sure you want to delete user "${username}"?`)) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(`/admin/delete-user/${userId}`, {
+                    method: 'DELETE'
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    alert('✅ User deleted successfully!');
+                    location.reload();
+                } else {
+                    alert('❌ Error: ' + data.message);
+                }
+            } catch (error) {
+                alert('❌ Error deleting user: ' + error.message);
+            }
+        }
+        
+        // Close modals when clicking outside
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>
